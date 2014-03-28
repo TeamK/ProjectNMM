@@ -1,0 +1,19 @@
+﻿<Window x:Class="ProjectNMM.UI.GameScreen"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Mühle" Height="350" Width="525" Icon="MainIcon.ico">
+    <Grid>
+        <Menu HorizontalAlignment="Left" VerticalAlignment="Top" Width="517">
+            <MenuItem Header="Neues Spiel">
+                <MenuItem Name="Mi_PvP" Header="Spieler gegen Spieler" Click="NewGamePvP_OnClick" />
+                <MenuItem Header="Spieler gegen Computer" />
+                <MenuItem Header="Computer gegen Computer" />
+                <MenuItem Header="Online Modus" />
+            </MenuItem>
+            <MenuItem Header="Optionen">
+                <MenuItem Header="Hintergrund" />
+            </MenuItem>
+        </Menu>
+
+    </Grid>
+</Window>

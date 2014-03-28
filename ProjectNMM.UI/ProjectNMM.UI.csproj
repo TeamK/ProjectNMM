@@ -61,7 +61,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="UIControlHandler.cs" />
-    <Page Include="StartScreen.xaml">
+    <Page Include="GameScreen.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -69,8 +69,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="StartScreen.xaml.cs">
-      <DependentUpon>StartScreen.xaml</DependentUpon>
+    <Compile Include="GameScreen.xaml.cs">
+      <DependentUpon>GameScreen.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
