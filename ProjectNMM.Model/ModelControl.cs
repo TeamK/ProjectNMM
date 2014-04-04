@@ -8,6 +8,8 @@ namespace ProjectNMM.Model
     public class ModelControl
     {
         public ModelControl()
-        { }
+        {
+            
+        }
     }
 }

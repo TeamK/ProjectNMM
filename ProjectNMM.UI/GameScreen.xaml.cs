@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ProjectNMM.Model;
 
 namespace ProjectNMM.UI
 {
@@ -23,14 +24,14 @@ namespace ProjectNMM.UI
       UiControlHandler uicontrol;
       public GameScreen()
       {
-         uicontrol = new UiControlHandler(this);
+         uicontrol = new UiControlHandler();
 
          InitializeComponent();
       }
 
       private void NewGamePvP_OnClick(object sender, RoutedEventArgs e)
         {
-           uicontrol.NewGame(UiControlHandler.GameType.pvp);
+           uicontrol.NewGame(GameType.PlayerVsPlayer);
         }
    }
 }
