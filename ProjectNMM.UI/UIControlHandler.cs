@@ -10,7 +10,8 @@ namespace ProjectNMM.UI
 {
     class UiControlHandler
     {
-        private GameType _typeofGame;
+        private GameScreen _gameScreen;
+        private GameType _typeOfGame;
 
         public GameScreen Gamescreen { get; set; }
         /*
@@ -23,17 +24,25 @@ namespace ProjectNMM.UI
 
         public UiControlHandler()
         {
-           // this.Gamescreen = gameScreen;
+            _gameScreen = new GameScreen();
+
+            
+            
+
+            // this.Gamescreen = gameScreen;
         }
 
         public void NewGame(GameType gameType)
         {
-            _typeofGame = gameType;
+            _typeOfGame = gameType;
         }
 
         public void StartGame()
         {
-
+            //_gameScreen.Show();
+            //_gameScreen.Visibility = Visibility.Hidden;
+            StartScreen startScreen = new StartScreen();
+            startScreen.Show();
         }
     }
 }

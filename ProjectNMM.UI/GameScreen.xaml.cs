@@ -21,17 +21,15 @@ namespace ProjectNMM.UI
    /// </summary>
    public partial class GameScreen : Window
    {
-      UiControlHandler uicontrol;
       public GameScreen()
       {
-         uicontrol = new UiControlHandler();
 
          InitializeComponent();
       }
 
       private void NewGamePvP_OnClick(object sender, RoutedEventArgs e)
         {
-           uicontrol.NewGame(GameType.PlayerVsPlayer);
+            
         }
    }
 }
