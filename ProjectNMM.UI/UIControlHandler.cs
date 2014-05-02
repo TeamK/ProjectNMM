@@ -8,19 +8,15 @@ using ProjectNMM.Model;
 
 namespace ProjectNMM.UI
 {
+    public delegate void StartNewGame(GameType gameType);
+    
     class UiControlHandler
     {
         private GameScreen _gameScreen;
+        private StartScreen _startScreen;
         private GameType _typeOfGame;
 
-        public GameScreen Gamescreen { get; set; }
-        /*
-          Action newAc = () =>
-           {
-              startScreen.Close();
-           };
-           Application.Current.Dispatcher.Invoke(newAc);
-         */
+        public ShutdownApp ShutdownDelegate { get; set; }
 
         public UiControlHandler()
         {
@@ -35,14 +31,20 @@ namespace ProjectNMM.UI
         public void NewGame(GameType gameType)
         {
             _typeOfGame = gameType;
+
+            if (_startScreen != null)
+            {
+                _startScreen.Close();
+                _startScreen = null;
+            }
         }
 
         public void StartGame()
         {
             //_gameScreen.Show();
             //_gameScreen.Visibility = Visibility.Hidden;
-            StartScreen startScreen = new StartScreen();
-            startScreen.Show();
+            _startScreen = new StartScreen(NewGame);
+            _startScreen.Show();
         }
     }
 }

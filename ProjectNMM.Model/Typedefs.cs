@@ -5,6 +5,7 @@
         Undefined           = 0,
         PlayerVsPlayer      = 1,
         PlayerVsMachine     = 2,
-        MachineVsMachine    = 3
+        MachineVsMachine    = 3,
+        Online              = 4
     };
 }

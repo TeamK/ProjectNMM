@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArtificialIntelligence.cs" />
     <Compile Include="ModelControl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Typedefs.cs" />
