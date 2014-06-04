@@ -1,0 +1,6 @@
+﻿<Window x:Class="ProjectNMM.UI.AboutScreen"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Über" Height="327" Width="440" Icon="MainIcon.ico" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+    <Grid/>
+</Window>

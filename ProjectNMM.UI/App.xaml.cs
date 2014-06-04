@@ -7,23 +7,18 @@ using System.Windows;
 
 namespace ProjectNMM.UI
 {
-    internal delegate void ShutdownApp();
-    
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
     public partial class App : Application
     {
-        private UiControlHandler _uiHandler;
+        private UiControl _uiControl;
         
         public App()
         {
-            _uiHandler = new UiControlHandler();
+            _uiControl = new UiControl();
 
-            _uiHandler.ShutdownDelegate = new ShutdownApp(Shutdown);
-
-            _uiHandler.StartGame();
+            _uiControl.StartGame();
         }
-
     }
 }

@@ -62,10 +62,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="StartScreen.xaml.cs">
-      <DependentUpon>StartScreen.xaml</DependentUpon>
+    <Compile Include="AboutScreen.xaml.cs">
+      <DependentUpon>AboutScreen.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UIControlHandler.cs" />
+    <Compile Include="NewGameScreen.xaml.cs">
+      <DependentUpon>NewGameScreen.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Typedefs.cs" />
+    <Compile Include="UIControl.cs" />
+    <Compile Include="UIHelpFunctions.cs" />
+    <Page Include="AboutScreen.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GameScreen.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -78,7 +87,7 @@
       <DependentUpon>GameScreen.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="StartScreen.xaml">
+    <Page Include="NewGameScreen.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

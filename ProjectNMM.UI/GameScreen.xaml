@@ -1,19 +1,39 @@
 ﻿<Window x:Class="ProjectNMM.UI.GameScreen"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Mühle" Height="350" Width="525" Icon="MainIcon.ico" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
-    <Grid>
-        <Menu HorizontalAlignment="Left" VerticalAlignment="Top" Width="517">
-            <MenuItem Header="Neues Spiel">
-                <MenuItem Name="Mi_PvP" Header="Spieler gegen Spieler" Click="NewGamePvP_OnClick" />
-                <MenuItem Header="Spieler gegen Computer" />
-                <MenuItem Header="Computer gegen Computer" />
-                <MenuItem Header="Online Modus" />
+        Title="Mühle" Height="650" Width="800" Icon="MainIcon.ico" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen" Closing="GameScreen_OnClosing">
+    <Grid x:Name="MainGrid">
+        <Menu VerticalAlignment="Top">
+            <MenuItem Header="_Spiel">
+                <MenuItem Header="_Neues Spiel..." Click="NewGame_OnClick"/>
+                <Separator />
+                <MenuItem x:Name="MnuUndo" Header="_Rückgängig" Click="MnuUndo_OnClick" />
+                <MenuItem x:Name="MnuRedo" Header="_Wiederholen" Click="MnuRedo_OnClick" />
+                <Separator />
+                <MenuItem x:Name="MnuSaveGame" Header="Spiel speichern" Click="MnuSaveGame_OnClick" />
+                <MenuItem x:Name="MnuLoadGame" Header="Spiel laden" Click="MnuLoadGame_OnClickGame_OnClick" />
             </MenuItem>
-            <MenuItem Header="Optionen">
-                <MenuItem Header="Hintergrund" />
+            <MenuItem Header="_Erweitert">
+                <MenuItem x:Name="MnuOptions" Header="_Optionen..." Click="MnuOptions_OnClick" />
+                <Separator />
+                <MenuItem x:Name="MnuAbout" Header="Ü_ber..." Click="MnuAbout_OnClick" />
             </MenuItem>
         </Menu>
 
+        <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="400" Margin="30,50,0,0" Stroke="Black" StrokeThickness="2" VerticalAlignment="Top" Width="400"/>
+        <Rectangle Fill="#FFFFFFFF" HorizontalAlignment="Left" Height="287" Margin="86,106,0,0" Stroke="Black" StrokeThickness="2" VerticalAlignment="Top" Width="287"/>
+        <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="150" Margin="155,175,0,0" Stroke="Black" StrokeThickness="2" VerticalAlignment="Top" Width="150"/>
+
+        <Grid x:Name="LineGrid"/>
+        <Grid x:Name="BoardGrid"/>
+
+        <Label Name="LblNamePlayer1" Content="Player1" HorizontalAlignment="Left" Margin="457,51,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="LblPlaystonesPlayer1" HorizontalAlignment="Left" Margin="661,51,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
+        <Label Name="LblPlayer1Events" HorizontalAlignment="Left" Margin="457,81,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
+        <Label Name="LblNamePlayer2" Content="Player2" HorizontalAlignment="Left" Margin="457,112,0,0" VerticalAlignment="Top"/>
+        <Label Name="LblPlayer2Events" HorizontalAlignment="Left" Margin="457,142,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
+        <Label x:Name="LblPlaystonesPlayer2" HorizontalAlignment="Left" Margin="661,112,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
+
+        <RichTextBox Name="TxtEventView" HorizontalAlignment="Left" Height="121" Margin="30,476,0,0" VerticalAlignment="Top" Width="730" IsReadOnly="True"/>
     </Grid>
 </Window>
