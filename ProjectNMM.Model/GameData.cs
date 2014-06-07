@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Xml.Serialization;
 
 namespace ProjectNMM.Model
 {
-    class GameData
+    /// <summary>
+    /// Class that represents a game
+    /// </summary>
+    [Serializable()]
+    public class GameData
     {
         public GameType GameType;
         public List<BoardState> BoardStates;
@@ -20,6 +23,10 @@ namespace ProjectNMM.Model
         public PlaystoneState Winner;
         public string Description;
 
+        /// <summary>
+        /// Constructor for a new game.
+        /// </summary>
+        /// <param name="gameType">Type of the game</param>
         public GameData(GameType gameType)
         {
             GameType = gameType;
@@ -36,16 +43,32 @@ namespace ProjectNMM.Model
             Winner = PlaystoneState.NotAvailable;
             Description = "";
         }
+
+        /// <summary>
+        /// Empty constructor, needed to deserialize from xml
+        /// </summary>
+        public GameData()
+        {
+        }
     }
     
-    class BoardState
+    /// <summary>
+    /// Class that represents a state of one turn
+    /// </summary>
+    [Serializable()]
+    public class BoardState
     {
+        [XmlIgnore]
         public PlaystoneState[,] Playstones;
         public PlaystoneState ActivePlayer;
         public int PlaystonesPlayer1;
         public int PlaystonesPlayer2;
         public bool BeforeLastTurnWasMill;
+        public PlaystoneState[] SerializablePlaystones;
 
+        /// <summary>
+        /// Constructs a new turn with the board
+        /// </summary>
         public BoardState()
         {
             Playstones = new PlaystoneState[7, 7];
@@ -59,6 +82,10 @@ namespace ProjectNMM.Model
             BeforeLastTurnWasMill = false;
         }
 
+        /// <summary>
+        /// Clones the actual BoardState object
+        /// </summary>
+        /// <returns>New instance</returns>
         public BoardState Clone()
         {
             BoardState newState = new BoardState();
@@ -75,6 +102,44 @@ namespace ProjectNMM.Model
             newState.PlaystonesPlayer2 = PlaystonesPlayer2;
 
             return newState;
+        }
+
+        /// <summary>
+        /// Converts the two-dimensional array to a normal array, needed to serialize to xml
+        /// </summary>
+        public void ChangeToNormalArray()
+        {
+            SerializablePlaystones = new PlaystoneState[49];
+
+            for (int i = 0; i < 7; i++)
+            {
+                for (int j = 0; j < 7; j++)
+                {
+                    SerializablePlaystones[i * 7 + j] = Playstones[i, j];
+                }
+            }
+        }
+
+        /// <summary>
+        /// Converts a normal array to a two-dimensional array, needed to deserialize from xml
+        /// </summary>
+        public void ChangeToDimensionalArray()
+        {
+            int index1 = 0;
+            int index2 = -1;
+
+            foreach (PlaystoneState serPlaystone in SerializablePlaystones)
+            {
+                index2++;
+
+                if (index2 >= 7)
+                {
+                    index2 = 0;
+                    index1++;
+                }
+
+                Playstones[index1, index2] = serPlaystone;
+            }
         }
     }
 }

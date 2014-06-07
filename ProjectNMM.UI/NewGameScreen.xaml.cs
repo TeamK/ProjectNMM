@@ -1,15 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using ProjectNMM.Model;
 
 namespace ProjectNMM.UI
@@ -21,6 +12,9 @@ namespace ProjectNMM.UI
     {
         public bool CreateNewGame { get; private set; }
         
+        /// <summary>
+        /// Creates a new screen
+        /// </summary>
         public NewGameScreen()
         {
             InitializeComponent();
@@ -35,6 +29,11 @@ namespace ProjectNMM.UI
             CreateNewGame = false;
         }
 
+        #region Properties
+
+        /// <summary>
+        /// Chosen game type
+        /// </summary>
         public GameType GameType
         {
             get
@@ -50,6 +49,11 @@ namespace ProjectNMM.UI
             }
         }
 
+        #endregion
+
+        /// <summary>
+        /// Event for "StartGame" button, checks if the inputs are correct
+        /// </summary>
         private void BtnStartGame_Click(object sender, RoutedEventArgs e)
         {
             if (TxtPlayer1.Text == "")

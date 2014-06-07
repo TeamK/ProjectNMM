@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 
 namespace ProjectNMM.UI
 {
@@ -14,6 +9,9 @@ namespace ProjectNMM.UI
     {
         private UiControl _uiControl;
         
+        /// <summary>
+        /// Standard start point for program
+        /// </summary>
         public App()
         {
             _uiControl = new UiControl();

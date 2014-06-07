@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -11,6 +8,9 @@ using ProjectNMM.Model;
 
 namespace ProjectNMM.UI
 {
+    /// <summary>
+    /// Class which provides general functions for the GUI
+    /// </summary>
     class UiHelpFunctions
     {
         private Grid _workGrid;
@@ -22,6 +22,11 @@ namespace ProjectNMM.UI
         public double[,] CoordinatesX { get; private set; }
         public double[,] CoordinatesY { get; private set; }
 
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="grid">Grid for the playstones ellipeses</param>
+        /// <param name="ellipsEvent">Event to assing to the ellipeses</param>
         public UiHelpFunctions(Grid grid, OnClickEvent ellipsEvent)
         {
             CoordinatesX = new double[7, 7];
@@ -32,6 +37,9 @@ namespace ProjectNMM.UI
             _ellipsEvent = ellipsEvent;
         }
 
+        /// <summary>
+        /// Initializes coordinate arraies
+        /// </summary>
         private void InitializeCoordinates()
         {
             for (int i = 0; i <= 6; i++)
@@ -101,6 +109,10 @@ namespace ProjectNMM.UI
             #endregion
         }
 
+        /// <summary>
+        /// Draws the lines for the board
+        /// </summary>
+        /// <param name="grid">Grid to draw the lines</param>
         public void DrawLines(Grid grid)
         {
             #region upper vertical line
@@ -152,6 +164,10 @@ namespace ProjectNMM.UI
             #endregion
         }
 
+        /// <summary>
+        /// Draws playstones on the board
+        /// </summary>
+        /// <param name="playstones">Board</param>
         public void DrawPlaystones(PlaystoneState[,] playstones)
         {
             for (int i = 0; i < 7; i++)
@@ -163,6 +179,14 @@ namespace ProjectNMM.UI
             }
         }
 
+        /// <summary>
+        /// Generates an ellipse
+        /// </summary>
+        /// <param name="left">x coordinate</param>
+        /// <param name="top">y coordinate</param>
+        /// <param name="playstoneState">State of the palystone</param>
+        /// <param name="clickEvent">Event to assign to the ellipse</param>
+        /// <returns></returns>
         private Ellipse GenerateEllipse(double left, double top, PlaystoneState playstoneState, OnClickEvent clickEvent)
         {
             double radiusToUse = 0;
@@ -235,6 +259,13 @@ namespace ProjectNMM.UI
             return ellipse;
         }
 
+        /// <summary>
+        /// Returns indexes from ui-coordinates
+        /// </summary>
+        /// <param name="coordinatesX">x coordinate</param>
+        /// <param name="coordinatesY">y coordinate</param>
+        /// <param name="index1">Index</param>
+        /// <param name="index2">Index</param>
         public void GetIndexes(double coordinatesX, double coordinatesY, ref int index1, ref int index2)
         {
             index1 = -1;

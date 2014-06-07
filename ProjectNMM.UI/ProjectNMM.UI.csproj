@@ -68,6 +68,9 @@
     <Compile Include="NewGameScreen.xaml.cs">
       <DependentUpon>NewGameScreen.xaml</DependentUpon>
     </Compile>
+    <Compile Include="OptionsScreen.xaml.cs">
+      <DependentUpon>OptionsScreen.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Typedefs.cs" />
     <Compile Include="UIControl.cs" />
     <Compile Include="UIHelpFunctions.cs" />
@@ -88,6 +91,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="NewGameScreen.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="OptionsScreen.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

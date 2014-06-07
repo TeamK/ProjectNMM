@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.Resources;
 
 namespace ProjectNMM.Model
 {
+    /// <summary>
+    /// Class which controls the game logic
+    /// </summary>
     class GameFlowHandler
     {
         public GameData Game { get; private set; }
@@ -17,7 +18,11 @@ namespace ProjectNMM.Model
         private bool _beforeLastTurnWasMill;
         private int LegimateTurns;
         
-        public GameFlowHandler(GameType gameType, GameStartType startType)
+        /// <summary>
+        /// Constructor to start a new game
+        /// </summary>
+        /// <param name="gameType">Type of the game</param>
+        public GameFlowHandler(GameType gameType)
         {
             Game = new GameData(gameType);
             _boardStates = Game.BoardStates;
@@ -32,22 +37,63 @@ namespace ProjectNMM.Model
             LegimateTurns = 0;
             GameEventPlayer1 = GameEvent.NoEvent;
             GameEventPlayer2 = GameEvent.NoEvent;
+            _lastBoardState = null;
+        }
+
+        /// <summary>
+        /// Constructor to resume a saved game
+        /// </summary>
+        /// <param name="data">Game to resume</param>
+        public GameFlowHandler(GameData data)
+        {
+            Game = data;
+            _boardStates = Game.BoardStates;
+
+            GameHasStarted = true;
+            LastTurnWasMill = false;
+            LegimateTurns = 0;
+            GameEventPlayer1 = GameEvent.NoEvent;
+            GameEventPlayer2 = GameEvent.NoEvent;
+            _lastBoardState = null;
         }
 
         #region Properties
 
+        /// <summary>
+        /// Array with the current board
+        /// </summary>
         public PlaystoneState[,] CurrentPlaystones
         {
             get { return _boardStates[_boardStates.Count - 1].Playstones; }
             private set { _boardStates[_boardStates.Count - 1].Playstones = value; }
         }
 
+        /// <summary>
+        /// Active player
+        /// </summary>
         public PlaystoneState CurrentPlayer
         {
             get { return _boardStates[_boardStates.Count - 1].ActivePlayer; }
             private set { _boardStates[_boardStates.Count - 1].ActivePlayer = value; }
         }
 
+        /// <summary>
+        /// Not the active player
+        /// </summary>
+        public PlaystoneState NotCurrentPlayer
+        {
+            get
+            {
+                if (CurrentPlayer == PlaystoneState.Player1)
+                    return PlaystoneState.Player2;
+                else
+                    return PlaystoneState.Player1;
+            }
+        }
+
+        /// <summary>
+        /// Event of the active player
+        /// </summary>
         public GameEvent CurrentPlayerEvent
         {
             get
@@ -67,19 +113,13 @@ namespace ProjectNMM.Model
             }
         }
 
-        public PlaystoneState NotCurrentPlayer
-        {
-            get
-            {
-                if (CurrentPlayer == PlaystoneState.Player1)
-                    return PlaystoneState.Player2;
-                else
-                    return PlaystoneState.Player1;
-            }
-        }
-
         #endregion
 
+        /// <summary>
+        /// Makes the next turn
+        /// </summary>
+        /// <param name="index1">Chosen playstone</param>
+        /// <param name="index2">Chosen playstone</param>
         public void PlaystoneChanged(int index1, int index2)
         {
             if (Game.GameIsOver)
@@ -90,6 +130,7 @@ namespace ProjectNMM.Model
             GameEventPlayer1 = GameEvent.NoEvent;
             GameEventPlayer2 = GameEvent.NoEvent;
 
+            // Chose the correct method
             if (LastTurnWasMill)
                 skipLastStep = RemovePlaystone(index1, index2);
             else if (GameHasStarted)
@@ -97,6 +138,7 @@ namespace ProjectNMM.Model
             else
                 SetPlaystone(index1, index2);
 
+            // Reset the board after a mill
             if (!skipLastStep)
             {
                 if (LastTurnWasMill)
@@ -106,7 +148,8 @@ namespace ProjectNMM.Model
                 }
             }
 
-            if (LastTurnWasMill && !ArePlaystonesNotInMills(index1, index2, NotCurrentPlayer, CurrentPlaystones))
+            // Make next step, if active player cannot remove a playstone after a mill
+            if (LastTurnWasMill && !ArePlaystonesNotInMills(NotCurrentPlayer, CurrentPlaystones))
             {
                 LastTurnWasMill = false;
 
@@ -124,6 +167,7 @@ namespace ProjectNMM.Model
                 CurrentPlayer = NotCurrentPlayer;
             }
 
+            // End the game, if one player has less than 2 playstones
             if (_boardStates[_boardStates.Count - 1].PlaystonesPlayer1 > 6 ||
                 _boardStates[_boardStates.Count - 1].PlaystonesPlayer2 > 6)
             {
@@ -137,6 +181,9 @@ namespace ProjectNMM.Model
             }
         }
 
+        /// <summary>
+        /// Withdraws the last turn
+        /// </summary>
         public void UndoLastTurn()
         {
             if (!GameHasStarted || _boardStates.Count < 2 || Game.GameIsOver)
@@ -157,8 +204,12 @@ namespace ProjectNMM.Model
             LastTurnWasMill = false;
         }
 
+        /// <summary>
+        /// Repeats the last turn, if possible
+        /// </summary>
         public void RedoLastTurn()
         {
+            // Checks for various exeptions
             if (_lastBoardState == null)
                 return;
             if (Game.MoveIsActive || LastTurnWasMill)
@@ -175,11 +226,16 @@ namespace ProjectNMM.Model
             _beforeLastTurnWasMill = false;
         }
 
+        /// <summary>
+        /// Sets a playstone
+        /// </summary>
+        /// <param name="index1">Chosen Playstone</param>
+        /// <param name="index2">Chosen playstone</param>
         private void SetPlaystone(int index1, int index2)
         {
+            // Checks for various exeptions
             if (CurrentPlaystones[index1, index2] != PlaystoneState.Selectable)
                 return;
-
             if (IsMill(index1, index2, CurrentPlayer, CurrentPlaystones, true))
             {
                 LastTurnWasMill = true;
@@ -188,6 +244,7 @@ namespace ProjectNMM.Model
 
             NextStep(index1, index2, CurrentPlayer);
 
+            // When all player have placed their playstones, the game begins
             if (LegimateTurns > 16)
             {
                 GameHasStarted = true;
@@ -208,17 +265,25 @@ namespace ProjectNMM.Model
                 LegimateTurns++;
         }
 
+        /// <summary>
+        /// Moves a playstone
+        /// </summary>
+        /// <param name="index1">Chosen Playstone</param>
+        /// <param name="index2">Chosen playstone</param>
         private void MovePlaystone(int index1, int index2)
         {
             if (!Game.MoveIsActive && CurrentPlaystones[index1, index2] == CurrentPlayer)
-            {
-                if (!AreMovesPossible(index1, index2, CurrentPlayer, CurrentPlaystones))
+            {// Move playstone
+                // If the player cannot move, he loses
+                if (!AreMovesPossible(CurrentPlayer, CurrentPlaystones) &&
+                    !(ModelHelpFunctions.CountPlaystoneStates(CurrentPlayer, CurrentPlaystones) < 3))
                 {
                     Game.GameIsOver = true;
                     CurrentPlayerEvent = GameEvent.GameOverNoMovesPossible;
                     Game.Winner = NotCurrentPlayer;
                     return;
                 }
+                // The player can jump if he has only 3 playstones left
                 if (ModelHelpFunctions.CountPlaystoneStates(CurrentPlayer, CurrentPlaystones) < 3)
                 {
                     Game.GameIsOver = true;
@@ -245,12 +310,12 @@ namespace ProjectNMM.Model
                 return;
             }
             else if (!Game.MoveIsActive)
-            {
+            {// Wrong playstone chosen
                 CurrentPlayerEvent = GameEvent.InvalidPlaystone;
                 return;
             }
             else if (CurrentPlaystones[index1, index2] == CurrentPlayer)
-            {
+            {// Calculate possible moves
                 ModelHelpFunctions.ReplacePlaystoneStates(
                     PlaystoneState.Selectable,
                     PlaystoneState.Neutral,
@@ -265,7 +330,7 @@ namespace ProjectNMM.Model
                 return;
             }
             if (CurrentPlaystones[index1, index2] != PlaystoneState.Selectable)
-            {
+            {// Wrong playstone chosen
                 CurrentPlayerEvent = GameEvent.InvalidPlaystone;
                 return;
             }
@@ -294,8 +359,15 @@ namespace ProjectNMM.Model
             Game.MoveIsActive = false;
         }
 
+        /// <summary>
+        /// Removes a playstone
+        /// </summary>
+        /// <param name="index1">Chosen Playstone</param>
+        /// <param name="index2">Chosen playstone</param>
+        /// <returns></returns>
         private bool RemovePlaystone(int index1, int index2)
         {
+            // Checks for various exeptions
             if (!LastTurnWasMill)
                 return true;
             if (CurrentPlaystones[index1, index2] != NotCurrentPlayer)
@@ -330,6 +402,12 @@ namespace ProjectNMM.Model
             return false;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index1">Chosen Playstone</param>
+        /// <param name="index2">Chosen playstone</param>
+        /// <param name="state">New state of the chosen playstone</param>
         private void NextStep(int index1, int index2, PlaystoneState state)
         {
             BoardState actualState = _boardStates[_boardStates.Count - 1];
@@ -346,11 +424,21 @@ namespace ProjectNMM.Model
             _boardStates[_boardStates.Count - 1].PlaystonesPlayer2 = actualState.PlaystonesPlayer2;
         }
 
+        /// <summary>
+        /// Checks if there is a mill
+        /// </summary>
+        /// <param name="index1">Chosen Playstone</param>
+        /// <param name="index2">Chosen playstone</param>
+        /// <param name="playerToCheck">Active player</param>
+        /// <param name="playstones">Actual board</param>
+        /// <param name="checkPartial">If true, the method checks if there is a mill after this turn</param>
+        /// <returns>True if mill, false if no mill</returns>
         static public bool IsMill(int index1, int index2, PlaystoneState playerToCheck, PlaystoneState[,] playstones,
             bool checkPartial = false)
         {
             bool isMill = false;
             
+            // Check middle fields first
             if (index1 == 3)
             {
                 if (index2 <= 2)
@@ -382,6 +470,7 @@ namespace ProjectNMM.Model
                     return false;
             }
 
+            // Check corner fields
             if (CheckHorizontalForMill(index1, playerToCheck, playstones, checkPartial))
                 return true;
             if (CheckVerticalForMill(index2, playerToCheck, playstones, checkPartial))
@@ -390,6 +479,16 @@ namespace ProjectNMM.Model
             return false;
         }
 
+        /// <summary>
+        /// Help function for IsMill
+        /// </summary>
+        /// <param name="line">Row to check</param>
+        /// <param name="playerToCheck">Active player</param>
+        /// <param name="playstones">Actual board</param>
+        /// <param name="checkPartial">If true, the method checks if there is a mill after this turn</param>
+        /// <param name="from">From this column</param>
+        /// <param name="to">To this column</param>
+        /// <returns>True if mill, false if no mill</returns>
         static private bool CheckHorizontalForMill(int line, PlaystoneState playerToCheck, PlaystoneState[,] playstones,
             bool checkPartial = false, int from = 0, int to = 6)
         {
@@ -409,6 +508,16 @@ namespace ProjectNMM.Model
                 return false;
         }
 
+        /// <summary>
+        /// Help function for IsMill
+        /// </summary>
+        /// <param name="column">Column to check</param>
+        /// <param name="playerToCheck">Active player</param>
+        /// <param name="playstones">Actual board</param>
+        /// <param name="checkPartial">If true, the method checks if there is a mill after this turn</param>
+        /// <param name="from">From this row</param>
+        /// <param name="to">To this row</param>
+        /// <returns>True if mill, false if no mill</returns>
         static private bool CheckVerticalForMill(int column, PlaystoneState playerToCheck, PlaystoneState[,] playstones,
             bool checkPartial = false, int from = 0, int to = 6)
         {
@@ -428,6 +537,14 @@ namespace ProjectNMM.Model
                 return false;
         }
 
+        /// <summary>
+        /// Sets the possible moves on the board
+        /// </summary>
+        /// <param name="index1">Chosen Playstone</param>
+        /// <param name="index2">Chosen playstone</param>
+        /// <param name="activePlayer">Active Player</param>
+        /// <param name="playstones">Actual board</param>
+        /// <param name="freeJumps">If true, the player can jump on every field</param>
         static public void PossibleMoves(int index1, int index2, PlaystoneState activePlayer, PlaystoneState[,] playstones,
             bool freeJumps = false)
         {
@@ -441,66 +558,91 @@ namespace ProjectNMM.Model
             switch (ModelHelpFunctions.GetPosition(index1, index2))
             {
                 case SquarePosition.TopLeft:
-                    CheckCornerForMove(index1, index2, activePlayer, playstones, SquarePosition.Left, SquarePosition.TopMiddle);
+                    CheckCornerForMove(index1, index2, playstones, SquarePosition.Left, SquarePosition.TopMiddle);
                     break;
                 case SquarePosition.TopMiddle:
-                    CheckMiddleForMove(index1, index2, activePlayer, playstones, SquarePosition.TopLeft, SquarePosition.TopRight);
+                    CheckMiddleForMove(index1, index2, playstones, SquarePosition.TopLeft, SquarePosition.TopRight);
                     break;
                 case SquarePosition.TopRight:
-                    CheckCornerForMove(index1, index2, activePlayer, playstones, SquarePosition.TopMiddle, SquarePosition.Right);
+                    CheckCornerForMove(index1, index2, playstones, SquarePosition.TopMiddle, SquarePosition.Right);
                     break;
                 case SquarePosition.Right:
-                    CheckMiddleForMove(index1, index2, activePlayer, playstones, SquarePosition.TopRight, SquarePosition.BottomRight);
+                    CheckMiddleForMove(index1, index2, playstones, SquarePosition.TopRight, SquarePosition.BottomRight);
                     break;
                 case SquarePosition.BottomRight:
-                    CheckCornerForMove(index1, index2, activePlayer, playstones, SquarePosition.Right, SquarePosition.BottomMiddle);
+                    CheckCornerForMove(index1, index2, playstones, SquarePosition.Right, SquarePosition.BottomMiddle);
                     break;
                 case SquarePosition.BottomMiddle:
-                    CheckMiddleForMove(index1, index2, activePlayer, playstones, SquarePosition.BottomRight, SquarePosition.BottomLeft);
+                    CheckMiddleForMove(index1, index2, playstones, SquarePosition.BottomRight, SquarePosition.BottomLeft);
                     break;
                 case SquarePosition.BottomLeft:
-                    CheckCornerForMove(index1, index2, activePlayer, playstones, SquarePosition.BottomMiddle, SquarePosition.Left);
+                    CheckCornerForMove(index1, index2, playstones, SquarePosition.BottomMiddle, SquarePosition.Left);
                     break;
                 case SquarePosition.Left:
-                    CheckMiddleForMove(index1, index2, activePlayer, playstones, SquarePosition.BottomLeft, SquarePosition.TopLeft);
+                    CheckMiddleForMove(index1, index2, playstones, SquarePosition.BottomLeft, SquarePosition.TopLeft);
                     break;
                 default:
                     return;
             }
         }
 
-        static private void CheckCornerForMove(int index1, int index2, PlaystoneState activePlayer,
+        /// <summary>
+        /// Help function for PossibleMoves
+        /// </summary>
+        /// <param name="index1">Chosen Playstone</param>
+        /// <param name="index2">Chosen playstone</param>
+        /// <param name="playstones">Actual board</param>
+        /// <param name="pos1">Position next to the corner</param>
+        /// <param name="pos2">Position next to the corner</param>
+        static private void CheckCornerForMove(int index1, int index2,
             PlaystoneState[,] playstones, SquarePosition pos1, SquarePosition pos2)
         {
             BoardSquare square = ModelHelpFunctions.GetSquare(index1, index2);
 
-            CheckPositionForMove(activePlayer, playstones, square, pos1);
-            CheckPositionForMove(activePlayer, playstones, square, pos2);
+            // Check fields next to this one
+            CheckPositionForMove(playstones, square, pos1);
+            CheckPositionForMove(playstones, square, pos2);
         }
 
-        static private void CheckMiddleForMove(int index1, int index2, PlaystoneState activePlayer,
+        /// <summary>
+        /// Help function for PossibleMoves
+        /// </summary>
+        /// <param name="index1">Chosen Playstone</param>
+        /// <param name="index2">Chosen playstone</param>
+        /// <param name="playstones">Actual board</param>
+        /// <param name="pos1">Position in the corner</param>
+        /// <param name="pos2">Position in the corner</param>
+        static private void CheckMiddleForMove(int index1, int index2,
             PlaystoneState[,] playstones, SquarePosition pos1, SquarePosition pos2)
         {
             BoardSquare square = ModelHelpFunctions.GetSquare(index1, index2);
 
-            CheckPositionForMove(activePlayer, playstones, square, pos1);
-            CheckPositionForMove(activePlayer, playstones, square, pos2);
+            // Check fields next to this one
+            CheckPositionForMove(playstones, square, pos1);
+            CheckPositionForMove(playstones, square, pos2);
 
+            // Check fields in the middle
             switch (square)
             {
                 case BoardSquare.OutterSquare:
                 case BoardSquare.InnerSquare:
-                    CheckPositionForMove(activePlayer, playstones, BoardSquare.MiddleSquare, ModelHelpFunctions.GetPosition(index1, index2));
+                    CheckPositionForMove(playstones, BoardSquare.MiddleSquare, ModelHelpFunctions.GetPosition(index1, index2));
                     break;
                 case BoardSquare.MiddleSquare:
-                    CheckPositionForMove(activePlayer, playstones, BoardSquare.OutterSquare, ModelHelpFunctions.GetPosition(index1, index2));
-                    CheckPositionForMove(activePlayer, playstones, BoardSquare.InnerSquare, ModelHelpFunctions.GetPosition(index1, index2));
+                    CheckPositionForMove(playstones, BoardSquare.OutterSquare, ModelHelpFunctions.GetPosition(index1, index2));
+                    CheckPositionForMove(playstones, BoardSquare.InnerSquare, ModelHelpFunctions.GetPosition(index1, index2));
                     break;
             }
         }
 
-        static private void CheckPositionForMove(PlaystoneState activePlayer,PlaystoneState[,] playstones,
-            BoardSquare square, SquarePosition pos)
+        /// <summary>
+        /// Help function for PossibleMoves
+        /// </summary>
+        /// <param name="playstones">Actual board</param>
+        /// <param name="square">Board square</param>
+        /// <param name="pos">Position inside the square</param>
+        static private void CheckPositionForMove(PlaystoneState[,] playstones, BoardSquare square,
+            SquarePosition pos)
         {
             int i = 0, j = 0;
 
@@ -509,8 +651,13 @@ namespace ProjectNMM.Model
                 playstones[i, j] = PlaystoneState.Selectable;
         }
 
-        static public bool AreMovesPossible(int index1, int index2, PlaystoneState activePlayer,
-            PlaystoneState[,] playstones)
+        /// <summary>
+        /// Checks if the actual player can make moves
+        /// </summary>
+        /// <param name="activePlayer">Active Player</param>
+        /// <param name="playstones">Current board</param>
+        /// <returns>True if the player can make moves, false if not</returns>
+        static public bool AreMovesPossible(PlaystoneState activePlayer, PlaystoneState[,] playstones)
         {
             for (int i = 0; i <= 6; i++)
             {
@@ -531,8 +678,13 @@ namespace ProjectNMM.Model
             return false;
         }
 
-        static public bool ArePlaystonesInMills(int index1, int index2, PlaystoneState player,
-            PlaystoneState[,] playstones)
+        /// <summary>
+        /// Checks if there are playstones in mills
+        /// </summary>
+        /// <param name="player">Player to check</param>
+        /// <param name="playstones">Current board</param>
+        /// <returns>True if there are mills, false if not</returns>
+        static public bool ArePlaystonesInMills(PlaystoneState player, PlaystoneState[,] playstones)
         {
             for (int i = 0; i <= 6; i++)
             {
@@ -549,8 +701,13 @@ namespace ProjectNMM.Model
             return false;
         }
 
-        static public bool ArePlaystonesNotInMills(int index1, int index2, PlaystoneState player,
-            PlaystoneState[,] playstones)
+        /// <summary>
+        /// Checks if there are playstones not in mills
+        /// </summary>
+        /// <param name="player">Player to check</param>
+        /// <param name="playstones">Current board</param>
+        /// <returns>True if there are playstones available which are not in a mill, false if not</returns>
+        static public bool ArePlaystonesNotInMills(PlaystoneState player, PlaystoneState[,] playstones)
         {
             for (int i = 0; i <= 6; i++)
             {
@@ -565,14 +722,6 @@ namespace ProjectNMM.Model
             }
 
             return false;
-        }
-
-        static private PlaystoneState OtherPlayer(PlaystoneState player)
-        {
-            if (player == PlaystoneState.Player1)
-                return PlaystoneState.Player2;
-            else
-                return PlaystoneState.Player1;
         }
     }
 }

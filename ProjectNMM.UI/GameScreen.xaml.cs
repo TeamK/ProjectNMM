@@ -1,19 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading;
+﻿using System.ComponentModel;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using ProjectNMM.Model;
 
 namespace ProjectNMM.UI
 {
@@ -25,14 +12,22 @@ namespace ProjectNMM.UI
         private UiDelegateCollection _delegateCollection;
         public NewGameScreen NewGameScreen;
 
+        /// <summary>
+        /// Creates a new screen
+        /// </summary>
+        /// <param name="delegateCollection">Delegates for events</param>
         public GameScreen(UiDelegateCollection delegateCollection)
         {
             InitializeComponent();
 
             _delegateCollection = delegateCollection;
+
+            BtnNextStep.Content = "Nächster Schritt";
+            BtnNextStep.Content = "Nächster Schritt";
         }
 
-        private void NewGame_OnClick(object sender, RoutedEventArgs e)
+        // Event handlings
+        private void MnuNewGame_OnClick(object sender, RoutedEventArgs e)
         {
             NewGameScreen = new NewGameScreen();
             NewGameScreen.ShowDialog();
@@ -74,6 +69,16 @@ namespace ProjectNMM.UI
         private void MnuAbout_OnClick(object sender, RoutedEventArgs e)
         {
             _delegateCollection.ShowAbouts();
+        }
+
+        private void BtnNextStep_Click(object sender, RoutedEventArgs e)
+        {
+            _delegateCollection.NextStep();
+        }
+
+        private void BtnAllSteps_Click(object sender, RoutedEventArgs e)
+        {
+            _delegateCollection.AllSteps();
         }
 
         public void Ellipse_OnClick(object sender, MouseEventArgs e)

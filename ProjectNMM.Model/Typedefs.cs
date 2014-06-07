@@ -1,6 +1,6 @@
 ﻿namespace ProjectNMM.Model
 {
-    public delegate void ReloadView();
+    // Enums for the model
     
     public enum GameType
     {
@@ -18,13 +18,6 @@
         Player1                     = 1,
         Player2                     = 2,
         Selectable                  = 3
-    };
-
-    public enum GameStartType
-    {
-        StartNew                    = 0,
-        Resume                      = 1,
-        PlaySaved                   = 2
     };
 
     public enum GameEvent

@@ -1,15 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 
 namespace ProjectNMM.Model
 {
-    static class ModelHelpFunctions
+    
+    /// <summary>
+    /// Static class which provides general functions for the model
+    /// </summary>
+    static public class ModelHelpFunctions
     {
         public const PlaystoneState DefaultAvailablePlaystoneState = PlaystoneState.Neutral;
         public const PlaystoneState DefaultNotAvailablePlaystoneState = PlaystoneState.NotAvailable;
 
+        /// <summary>
+        /// Initializes a new board
+        /// </summary>
+        /// <param name="playstones">Board</param>
+        /// <param name="defaultValue">Default value of possible positions</param>
         static public void InitializePlaystoneStates(PlaystoneState[,] playstones, PlaystoneState defaultValue = DefaultAvailablePlaystoneState)
         {
             SetPlaystoneStates(DefaultNotAvailablePlaystoneState, playstones);
@@ -48,6 +54,11 @@ namespace ProjectNMM.Model
             #endregion
         }
 
+        /// <summary>
+        /// Sets the whole board to a single state
+        /// </summary>
+        /// <param name="state">State to set</param>
+        /// <param name="playstones">Board</param>
         static public void SetPlaystoneStates(PlaystoneState state, PlaystoneState[,] playstones)
         {
             for (int i = 0; i <= 6; i++)
@@ -59,6 +70,12 @@ namespace ProjectNMM.Model
             }
         }
 
+        /// <summary>
+        /// Replaces playstones
+        /// </summary>
+        /// <param name="stateOld">State to search for</param>
+        /// <param name="stateNew">State to replace with</param>
+        /// <param name="playstones">Board</param>
         static public void ReplacePlaystoneStates(PlaystoneState stateOld, PlaystoneState stateNew, PlaystoneState[,] playstones)
         {
             for (int i = 0; i <= 6; i++)
@@ -71,6 +88,12 @@ namespace ProjectNMM.Model
             }
         }
 
+        /// <summary>
+        /// Counts the amount of playstones
+        /// </summary>
+        /// <param name="state">State to search for</param>
+        /// <param name="playstones">Board</param>
+        /// <returns>Amount of found states</returns>
         static public int CountPlaystoneStates(PlaystoneState state, PlaystoneState[,] playstones)
         {
             int tmpInt = 0;
@@ -87,6 +110,11 @@ namespace ProjectNMM.Model
             return tmpInt;
         }
 
+        /// <summary>
+        /// Copies a board
+        /// </summary>
+        /// <param name="playstones">Board to copy</param>
+        /// <returns>Copied board</returns>
         static public PlaystoneState[,] CopyPlaystoneStates(PlaystoneState[,] playstones)
         {
             PlaystoneState[,] stones = new PlaystoneState[7, 7];
@@ -102,6 +130,14 @@ namespace ProjectNMM.Model
             return stones;
         }
 
+        /// <summary>
+        /// Merges a board
+        /// </summary>
+        /// <param name="actualBoard">Board</param>
+        /// <param name="index1">Chosen Playstone</param>
+        /// <param name="index2">Chosen playstone</param>
+        /// <param name="newState">State to set</param>
+        /// <returns>Merged board</returns>
         static public PlaystoneState[,] MergePlaystones(PlaystoneState[,] actualBoard, int index1, int index2,
             PlaystoneState newState)
         {
@@ -112,6 +148,12 @@ namespace ProjectNMM.Model
             return playstones;
         }
 
+        /// <summary>
+        /// Returns the square
+        /// </summary>
+        /// <param name="index1">Chosen Playstone</param>
+        /// <param name="index2">Chosen playstone</param>
+        /// <returns>square</returns>
         static public BoardSquare GetSquare(int index1, int index2)
         {
             if ((index1 == 0 && index2 == 0) ||
@@ -147,9 +189,15 @@ namespace ProjectNMM.Model
             return BoardSquare.NoSquare;
         }
 
+        /// <summary>
+        /// Returns the position inside a square
+        /// </summary>
+        /// <param name="index1">Chosen Playstone</param>
+        /// <param name="index2">Chosen playstone</param>
+        /// <returns>Position inside square</returns>
         static public SquarePosition GetPosition(int index1, int index2)
         {
-            switch (ModelHelpFunctions.GetSquare(index1, index2))
+            switch (GetSquare(index1, index2))
             {
                 case BoardSquare.OutterSquare:
                     if (index1 == 0 && index2 == 0)
@@ -212,6 +260,13 @@ namespace ProjectNMM.Model
             return SquarePosition.NoCorner;
         }
 
+        /// <summary>
+        /// Returns indexes of a position
+        /// </summary>
+        /// <param name="square">Square on the board</param>
+        /// <param name="position">Position inside squar</param>
+        /// <param name="index1">Index</param>
+        /// <param name="index2">Index</param>
         static public void GetIndexes(BoardSquare square, SquarePosition position, ref int index1, ref int index2)
         {
             index1 = -1;
@@ -230,6 +285,27 @@ namespace ProjectNMM.Model
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Removes special charactes
+        /// </summary>
+        /// <param name="str">Input string</param>
+        /// <returns>Normalized string</returns>
+        static public string RemoveSpecialCharacters(string str)
+        {
+            if (string.IsNullOrEmpty(str))
+                return "";
+
+            StringBuilder sb = new StringBuilder();
+            foreach (char c in str)
+            {
+                if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '.' || c == '_' || c == ' ')
+                {
+                    sb.Append(c);
+                }
+            }
+            return sb.ToString();
         }
     }
 }

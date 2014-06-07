@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using System.Diagnostics;
 
 namespace ProjectNMM.UI
 {
@@ -18,9 +10,44 @@ namespace ProjectNMM.UI
     /// </summary>
     public partial class AboutScreen : Window
     {
+        /// <summary>
+        /// Constructor for a new screen
+        /// </summary>
         public AboutScreen()
         {
             InitializeComponent();
+        }
+
+        /// <summary>
+        /// Opens the hyperlink the standard browser
+        /// </summary>
+        private void HyperlinkLabel_OnClick(object sender, MouseEventArgs e)
+        {
+            Label label = (Label) sender;
+            string url = "";
+            
+
+            switch (label.Name)
+            {
+                case "LblProjectSite":
+                    url = "https://github.com/TeamK/ProjectNMM";
+                    break;
+                case "LblLicense":
+                    url = "http://www.gnu.org/licenses/gpl-3.0";
+                    break;
+                case "LblIconSource":
+                    url = "http://icomoon.io/";
+                    break;
+                case "LblIconLicense1":
+                    url = "http://www.gnu.org/licenses/gpl.html";
+                    break;
+                case "LblIconLicense2":
+                    url = "http://creativecommons.org/licenses/by/3.0/";
+                    break;
+            }
+
+            if (!string.IsNullOrEmpty(url))
+                Process.Start(url);
         }
     }
 }

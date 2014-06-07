@@ -1,11 +1,11 @@
 ﻿<Window x:Class="ProjectNMM.UI.GameScreen"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Mühle" Height="650" Width="800" Icon="MainIcon.ico" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen" Closing="GameScreen_OnClosing">
+        Title="Mühle" Height="515" Width="800" Icon="MainIcon.ico" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen" Closing="GameScreen_OnClosing">
     <Grid x:Name="MainGrid">
         <Menu VerticalAlignment="Top">
             <MenuItem Header="_Spiel">
-                <MenuItem Header="_Neues Spiel..." Click="NewGame_OnClick"/>
+                <MenuItem Header="_Neues Spiel..." Click="MnuNewGame_OnClick"/>
                 <Separator />
                 <MenuItem x:Name="MnuUndo" Header="_Rückgängig" Click="MnuUndo_OnClick" />
                 <MenuItem x:Name="MnuRedo" Header="_Wiederholen" Click="MnuRedo_OnClick" />
@@ -27,13 +27,14 @@
         <Grid x:Name="LineGrid"/>
         <Grid x:Name="BoardGrid"/>
 
-        <Label Name="LblNamePlayer1" Content="Player1" HorizontalAlignment="Left" Margin="457,51,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="LblPlaystonesPlayer1" HorizontalAlignment="Left" Margin="661,51,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
+        <Label Name="LblNamePlayer1" HorizontalAlignment="Left" Margin="457,51,0,0" VerticalAlignment="Top"/>
+        <Label Name="LblPlaystonesPlayer1" HorizontalAlignment="Left" Margin="661,51,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
         <Label Name="LblPlayer1Events" HorizontalAlignment="Left" Margin="457,81,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
-        <Label Name="LblNamePlayer2" Content="Player2" HorizontalAlignment="Left" Margin="457,112,0,0" VerticalAlignment="Top"/>
+        <Label Name="LblNamePlayer2" HorizontalAlignment="Left" Margin="457,112,0,0" VerticalAlignment="Top"/>
         <Label Name="LblPlayer2Events" HorizontalAlignment="Left" Margin="457,142,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
-        <Label x:Name="LblPlaystonesPlayer2" HorizontalAlignment="Left" Margin="661,112,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
+        <Label Name="LblPlaystonesPlayer2" HorizontalAlignment="Left" Margin="661,112,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
 
-        <RichTextBox Name="TxtEventView" HorizontalAlignment="Left" Height="121" Margin="30,476,0,0" VerticalAlignment="Top" Width="730" IsReadOnly="True"/>
+        <Button x:Name="BtnNextStep" Content="Nächster Schritt" HorizontalAlignment="Left" Margin="457,241,0,0" VerticalAlignment="Top" Width="100" Click="BtnNextStep_Click"/>
+        <Button x:Name="BtnAllSteps" Content="Alle Schritte" HorizontalAlignment="Left" Margin="562,241,0,0" VerticalAlignment="Top" Width="100" Click="BtnAllSteps_Click"/>
     </Grid>
 </Window>
